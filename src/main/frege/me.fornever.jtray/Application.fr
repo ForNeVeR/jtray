@@ -1,4 +1,4 @@
-module Hello where
+module me.fornever.jtray.Application where
 
 greeting friend = "Hello, " ++ friend ++ "!"
 

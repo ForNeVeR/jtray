@@ -23,4 +23,4 @@ dependencies {
   compile 'com.theoryinpractise.frege:frege:3.22.367-g2737683'
 }
 
-mainClassName = 'Hello'
+mainClassName = 'me.fornever.jtray.Application'
