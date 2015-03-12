@@ -1,6 +1,8 @@
 module me.fornever.jtray.Application where
 
-greeting friend = "Hello, " ++ friend ++ "!"
+printUsage :: IO ()
+printUsage = println "Usage: jtray jenkinsUrl"
 
-main args = do
-    println (greeting "World")
+main :: [String] -> IO ()
+main [jenkinsUrl] = println jenkinsUrl
+main _ = printUsage
