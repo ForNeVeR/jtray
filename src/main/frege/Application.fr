@@ -2,10 +2,12 @@ module me.fornever.jtray.Application where
 
 import me.fornever.jtray.Data (CCProject)
 import me.fornever.jtray.Network (withNetworkStream)
-import me.fornever.jtray.Parser (parseStream)
+import me.fornever.jtray.Parser (readStream)
+
+jenkinsUrl :: String
+jenkinsUrl = "http://localhost:3500/cc.xml"
 
 main :: [String] -> IO ()
-main [jenkinsUrl] = do
-    projects <- withNetworkStream jenkinsUrl parseStream
+main _ = do
+    projects <- withNetworkStream jenkinsUrl readStream
     println $ show projects
-main _ = println "Usage: jtray jenkinsUrl"

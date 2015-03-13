@@ -10,17 +10,18 @@ derive Exceptional SAXException
 
 data Document = pure native org.w3c.dom.Document
 
-data DocumentBuilder = native javax.xml.parsers.DocumentBuilder where
-    native parse :: MutableIO DocumentBuilder -> MutableIO InputStream -> IO Document
+data DocumentBuilder = pure native javax.xml.parsers.DocumentBuilder where
+    native parse :: DocumentBuilder -> InputStream -> IO Document
         throws SAXException, IOException
 
-data DocumentBuilderFactory = native javax.xml.parsers.DocumentBuilderFactory where
-    native new javax.xml.parsers.DocumentBuilderFactory.newInstance :: () -> STMutable s DocumentBuilderFactory
-    native newDocumentBuilder :: MutableIO DocumentBuilderFactory -> IO (MutableIO DocumentBuilder)
+data DocumentBuilderFactory = pure native javax.xml.parsers.DocumentBuilderFactory where
+    native new javax.xml.parsers.DocumentBuilderFactory.newInstance :: () -> ST s DocumentBuilderFactory
+    native newDocumentBuilder :: DocumentBuilderFactory -> ST s DocumentBuilder
         throws ParserConfigurationException
 
-parseStream :: InputStream -> IO [CCProject]
-parseStream _ = do
+readStream :: InputStream -> IO [CCProject]
+readStream stream = do
     factory <- DocumentBuilderFactory.new ()
     builder <- factory.newDocumentBuilder
+    document <- builder.parse stream
     return [] -- TODO: Really parse the stream
