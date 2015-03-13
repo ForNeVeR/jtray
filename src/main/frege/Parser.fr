@@ -8,7 +8,24 @@ derive Exceptional ParserConfigurationException
 data SAXException = pure native org.xml.sax.SAXException
 derive Exceptional SAXException
 
-data Document = pure native org.w3c.dom.Document
+data Node = pure native org.w3c.dom.Node where
+    pure native getFirstChild :: Node -> Node
+    pure native getChildNodes :: Node -> NodeList
+
+data NodeList = pure native org.w3c.dom.NodeList where
+    pure native getLength :: NodeList -> Int
+    pure native item :: NodeList -> Int -> Node
+
+    toList :: NodeList -> [Node]
+    toList nodeList = reverse $ fold appendItem [] [0 .. (nodeList.getLength)]
+        where appendItem :: [Node] -> Int -> [Node]
+              appendItem acc i = nodeList.item i : acc
+
+data Element = pure native org.w3c.dom.Element
+
+data Document = pure native org.w3c.dom.Document where
+    pure native getElementsByTagName :: Document -> String -> NodeList
+    pure native getDocumentElement :: Document -> Element
 
 data DocumentBuilder = pure native javax.xml.parsers.DocumentBuilder where
     native parse :: DocumentBuilder -> InputStream -> IO Document
@@ -24,4 +41,12 @@ readStream stream = do
     factory <- DocumentBuilderFactory.new ()
     builder <- factory.newDocumentBuilder
     document <- builder.parse stream
-    return [] -- TODO: Really parse the stream
+    return $ parse document
+
+parse :: Document -> [CCProject]
+parse document = let elements = document.getElementsByTagName "Projects" -- TODO: Still wrong, fix that.
+                     list = elements.toList
+                 in map project list
+
+project :: Node -> CCProject
+project _ = CCProject "A" " " -- TODO: Construct a project.
