@@ -1,0 +1,4 @@
+module me.fornever.jtray.Data where
+
+data CCProject = CCProject { name :: String, activity :: String }
+derive Show CCProject

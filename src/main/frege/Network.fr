@@ -2,10 +2,10 @@ module me.fornever.jtray.Network where
 
 import Java.Net (URL)
 
-native streamToString org.apache.commons.io.IOUtils.toString :: URL -> IO (IOException|String)
-
-getUrlContent :: String -> IO (IOException|String)
-getUrlContent href = do
-    url <- URL.new href
-    content <- streamToString url
-    return content
+withNetworkStream :: String -> (InputStream -> IO a) -> IO a
+withNetworkStream url action = do
+    url <- URL.new url
+    stream <- url.openStream
+    result <- action stream
+    stream.close
+    return result

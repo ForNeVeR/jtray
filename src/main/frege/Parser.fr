@@ -1,0 +1,16 @@
+module me.fornever.jtray.Parser where
+
+import me.fornever.jtray.Data (CCProject)
+
+data DocumentBuilderFactory = pure native javax.xml.parsers.DocumentBuilderFactory where
+    native new javax.xml.parsers.DocumentBuilderFactory.newInstance :: () -> IO DocumentBuilderFactory
+
+-- data DocumentBuilder = native javax.xml.parsers.DocumentBuilder where
+--     native new javax.xml.parsers.DocumentBuilderFactory.newDocumentBuilder ::
+--         (MutableIO DocumentBuilderFactory) -> ST s (Mutable s DocumentBuilder)
+
+parseStream :: InputStream -> IO [CCProject]
+parseStream _ = do
+    -- factory <- DocumentBuilderFactory.new ()
+    -- builder <- DocumentBuilder.new factory
+    return [] -- TODO: Really parse the stream
