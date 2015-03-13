@@ -1,0 +1,11 @@
+module me.fornever.jtray.Application where
+
+import me.fornever.jtray.Network (getUrlContent)
+
+main :: [String] -> IO ()
+main [jenkinsUrl] = do
+    content <- getUrlContent jenkinsUrl
+    case content of
+        Left _ -> println "error"
+        Right (string) -> println string
+main _ = println "Usage: jtray jenkinsUrl"
