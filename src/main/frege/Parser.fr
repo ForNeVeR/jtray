@@ -2,15 +2,25 @@ module me.fornever.jtray.Parser where
 
 import me.fornever.jtray.Data (CCProject)
 
-data DocumentBuilderFactory = pure native javax.xml.parsers.DocumentBuilderFactory where
-    native new javax.xml.parsers.DocumentBuilderFactory.newInstance :: () -> IO DocumentBuilderFactory
+data ParserConfigurationException = pure native javax.xml.parsers.ParserConfigurationException
+derive Exceptional ParserConfigurationException
 
--- data DocumentBuilder = native javax.xml.parsers.DocumentBuilder where
---     native new javax.xml.parsers.DocumentBuilderFactory.newDocumentBuilder ::
---         (MutableIO DocumentBuilderFactory) -> ST s (Mutable s DocumentBuilder)
+data SAXException = pure native org.xml.sax.SAXException
+derive Exceptional SAXException
+
+data Document = pure native org.w3c.dom.Document
+
+data DocumentBuilder = native javax.xml.parsers.DocumentBuilder where
+    native parse :: MutableIO DocumentBuilder -> MutableIO InputStream -> IO Document
+        throws SAXException, IOException
+
+data DocumentBuilderFactory = native javax.xml.parsers.DocumentBuilderFactory where
+    native new javax.xml.parsers.DocumentBuilderFactory.newInstance :: () -> STMutable s DocumentBuilderFactory
+    native newDocumentBuilder :: MutableIO DocumentBuilderFactory -> IO (MutableIO DocumentBuilder)
+        throws ParserConfigurationException
 
 parseStream :: InputStream -> IO [CCProject]
 parseStream _ = do
-    -- factory <- DocumentBuilderFactory.new ()
-    -- builder <- DocumentBuilder.new factory
+    factory <- DocumentBuilderFactory.new ()
+    builder <- factory.newDocumentBuilder
     return [] -- TODO: Really parse the stream
