@@ -9,15 +9,15 @@ data SAXException = pure native org.xml.sax.SAXException
 derive Exceptional SAXException
 
 data Node = pure native org.w3c.dom.Node where
-    pure native getFirstChild :: Node -> Node
+    pure native getFirstChild :: Node -> Maybe Node
     pure native getChildNodes :: Node -> NodeList
 
 data NodeList = pure native org.w3c.dom.NodeList where
     pure native getLength :: NodeList -> Int
-    pure native item :: NodeList -> Int -> Node
+    pure native item :: NodeList -> Int -> Maybe Node
 
     toList :: NodeList -> [Node]
-    toList nodeList = map nodeList.item [0 .. (nodeList.getLength)]
+    toList nodeList = map (unJust . nodeList.item) [0 .. (nodeList.getLength - 1)]
 
 data Element = pure native org.w3c.dom.Element
 
@@ -42,7 +42,8 @@ readStream stream = do
     return $ parse document
 
 parse :: Document -> [CCProject]
-parse document = let elements = document.getElementsByTagName "Projects" -- TODO: Still wrong, fix that.
+parse document = let root = unJust $ (document.getElementsByTagName "Projects").item 0
+                     elements = root.getChildNodes
                      list = elements.toList
                  in map project list
 
