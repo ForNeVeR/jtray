@@ -8,9 +8,7 @@ derive Exceptional ParserConfigurationException
 data SAXException = pure native org.xml.sax.SAXException
 derive Exceptional SAXException
 
-data Node = pure native org.w3c.dom.Node where
-    pure native getFirstChild :: Node -> Maybe Node
-    pure native getChildNodes :: Node -> NodeList
+data Node = pure native org.w3c.dom.Node
 
 data NodeList = pure native org.w3c.dom.NodeList where
     pure native getLength :: NodeList -> Int
@@ -23,7 +21,6 @@ data Element = pure native org.w3c.dom.Element
 
 data Document = pure native org.w3c.dom.Document where
     pure native getElementsByTagName :: Document -> String -> NodeList
-    pure native getDocumentElement :: Document -> Element
 
 data DocumentBuilder = pure native javax.xml.parsers.DocumentBuilder where
     native parse :: DocumentBuilder -> InputStream -> IO Document
@@ -42,10 +39,8 @@ readStream stream = do
     return $ parse document
 
 parse :: Document -> [CCProject]
-parse document = let root = unJust $ (document.getElementsByTagName "Projects").item 0
-                     elements = root.getChildNodes
-                     list = elements.toList
-                 in map project list
+parse document = let nodes = document.getElementsByTagName "Project"
+                 in map project nodes.toList
 
 project :: Node -> CCProject
 project _ = CCProject "A" " " -- TODO: Construct a project.
