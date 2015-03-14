@@ -1,0 +1,23 @@
+module me.fornever.jtray.Config where
+
+import frege.java.Util (Properties)
+
+data Config = Config { jenkinsUrl :: String,
+                       jenkinsAuth :: Bool,
+                       jenkinsLogin :: Maybe String,
+                       jenkinsApiKey :: Maybe String }
+
+readConfig :: InputStream -> IO Config
+readConfig stream = do
+    properties <- Properties.new ()
+    properties.load stream
+    return $ fromProperties properties
+
+fromProperties :: Properties -> Config
+fromProperties properties = let auth = (get "jenkins.auth") == "true"
+                            in Config { jenkinsUrl = get "jenkins.url",
+                                        jenkinsAuth = auth,
+                                        jenkinsLogin = if auth then Just $ get "jenkins.login" else Nothing,
+                                        jenkinsApiKey = if auth then Just $ get "jenkins.api_key" else Nothing }
+                            where get :: String -> String
+                                  get key = properties.getProperty key ""
