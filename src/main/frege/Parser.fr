@@ -17,9 +17,7 @@ data NodeList = pure native org.w3c.dom.NodeList where
     pure native item :: NodeList -> Int -> Node
 
     toList :: NodeList -> [Node]
-    toList nodeList = reverse $ fold appendItem [] [0 .. (nodeList.getLength)]
-        where appendItem :: [Node] -> Int -> [Node]
-              appendItem acc i = nodeList.item i : acc
+    toList nodeList = map nodeList.item [0 .. (nodeList.getLength)]
 
 data Element = pure native org.w3c.dom.Element
 
