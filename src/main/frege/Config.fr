@@ -29,9 +29,8 @@ fromProperties properties = do
                       jenkinsLogin = if auth then Just jenkinsLogin else Nothing,
                       jenkinsApiKey = if auth then Just jenkinsApiKey else Nothing }
 
--- readConfig :: MutableIO InputStream -> IO Config
--- readConfig stream = do
---     properties <- loadProperties stream
---     config <- fromProperties properties
---     return config
-
+readConfig :: MutableIO InputStream -> IO Config
+readConfig stream = do
+    properties <- loadProperties stream
+    config <- fromProperties properties
+    return config
