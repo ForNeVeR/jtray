@@ -7,32 +7,31 @@ data Config = Config { jenkinsUrl :: String,
                        jenkinsLogin :: Maybe String,
                        jenkinsApiKey :: Maybe String }
 
-readConfig :: InputStream -> IO Config
-readConfig stream = do
-    properties <- loadProperties stream
-    -- config <- fromProperties properties
-    -- return config
-    return $ Config "" false Nothing Nothing -- TODO: Real config.
-
-loadProperties :: InputStream -> IOMutable Properties
-loadProperties stream = do
-    properties <- newProperties
-    -- properties.load stream
-    return properties
-
 newProperties :: STMutable s Properties
 newProperties = Properties.new ()
 
---fromProperties :: STMutable s Properties -> ST s Config
---fromProperties properties = do
---    jenkinsAuth <- get "jenkins.auth"
---    jenkinsUrl <- get "jenkins.url"
---    jenkinsLogin <- get "jenkins.login"
---    jenkinsApiKey <- get "jenkins.api_key"
---    let auth = jenkinsAuth == "true"
---    return $ Config { jenkinsUrl = jenkinsUrl,
---                      jenkinsAuth = jenkinsAuth,
---                      jenkinsLogin = if auth then Just jenkinsLogin else Nothing,
---                      jenkinsApiKey = if auth then Just jenkinsApiKey else Nothing }
---  where get :: String -> ST s String
---        get key = properties.getProperty key ""
+loadProperties :: MutableIO InputStream -> IO (MutableIO Properties)
+loadProperties stream = do
+    properties <- newProperties
+    properties.load stream
+    return properties
+
+fromProperties :: Mutable s Properties -> ST s Config
+fromProperties properties = do
+    jenkinsAuth <- properties.getProperty "jenkins.auth" ""
+    jenkinsUrl <- properties.getProperty "jenkins.url" ""
+    jenkinsLogin <- properties.getProperty "jenkins.login" ""
+    jenkinsApiKey <- properties.getProperty "jenkins.api_key" ""
+
+    let auth = jenkinsAuth == "true"
+    return $ Config { jenkinsUrl = jenkinsUrl,
+                      jenkinsAuth = auth,
+                      jenkinsLogin = if auth then Just jenkinsLogin else Nothing,
+                      jenkinsApiKey = if auth then Just jenkinsApiKey else Nothing }
+
+-- readConfig :: MutableIO InputStream -> IO Config
+-- readConfig stream = do
+--     properties <- loadProperties stream
+--     config <- fromProperties properties
+--     return config
+
