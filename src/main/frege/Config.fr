@@ -9,15 +9,30 @@ data Config = Config { jenkinsUrl :: String,
 
 readConfig :: InputStream -> IO Config
 readConfig stream = do
-    properties <- Properties.new ()
-    properties.load stream
-    return $ fromProperties properties
+    properties <- loadProperties stream
+    -- config <- fromProperties properties
+    -- return config
+    return $ Config "" false Nothing Nothing -- TODO: Real config.
 
-fromProperties :: Properties -> Config
-fromProperties properties = let auth = (get "jenkins.auth") == "true"
-                            in Config { jenkinsUrl = get "jenkins.url",
-                                        jenkinsAuth = auth,
-                                        jenkinsLogin = if auth then Just $ get "jenkins.login" else Nothing,
-                                        jenkinsApiKey = if auth then Just $ get "jenkins.api_key" else Nothing }
-                            where get :: String -> String
-                                  get key = properties.getProperty key ""
+loadProperties :: InputStream -> IOMutable Properties
+loadProperties stream = do
+    properties <- newProperties
+    -- properties.load stream
+    return properties
+
+newProperties :: STMutable s Properties
+newProperties = Properties.new ()
+
+--fromProperties :: STMutable s Properties -> ST s Config
+--fromProperties properties = do
+--    jenkinsAuth <- get "jenkins.auth"
+--    jenkinsUrl <- get "jenkins.url"
+--    jenkinsLogin <- get "jenkins.login"
+--    jenkinsApiKey <- get "jenkins.api_key"
+--    let auth = jenkinsAuth == "true"
+--    return $ Config { jenkinsUrl = jenkinsUrl,
+--                      jenkinsAuth = jenkinsAuth,
+--                      jenkinsLogin = if auth then Just jenkinsLogin else Nothing,
+--                      jenkinsApiKey = if auth then Just jenkinsApiKey else Nothing }
+--  where get :: String -> ST s String
+--        get key = properties.getProperty key ""
