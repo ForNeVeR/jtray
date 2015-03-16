@@ -1,0 +1,4 @@
+jenkins.url=http://localhost:8080/cc.xml
+jenkins.auth=true
+jenkins.login=login
+jenkins.api_key=apikey

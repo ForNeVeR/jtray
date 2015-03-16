@@ -1,0 +1,42 @@
+module me.fornever.jtray.Config where
+
+import frege.java.Util (Properties)
+
+data Config = Config { jenkinsUrl :: String,
+                       jenkinsAuth :: Bool,
+                       jenkinsLogin :: Maybe String,
+                       jenkinsApiKey :: Maybe String }
+derive Show Config
+
+-- TODO: This definition here is needed because of https://github.com/Frege/frege/issues/129. It may be removed after
+-- the issue have been resolved.
+data Properties' = native java.util.Properties where
+    native load :: MutableIO Properties -> InputStream -> IO () throws IOException
+
+newProperties :: STMutable s Properties
+newProperties = Properties.new ()
+
+loadProperties :: InputStream -> IO (MutableIO Properties)
+loadProperties stream = do
+    properties <- newProperties
+    Properties'.load properties stream
+    return properties
+
+fromProperties :: Mutable s Properties -> ST s Config
+fromProperties properties = do
+    jenkinsAuth <- properties.getProperty "jenkins.auth" ""
+    jenkinsUrl <- properties.getProperty "jenkins.url" ""
+    jenkinsLogin <- properties.getProperty "jenkins.login" ""
+    jenkinsApiKey <- properties.getProperty "jenkins.api_key" ""
+
+    let auth = jenkinsAuth == "true"
+    return $ Config { jenkinsUrl = jenkinsUrl,
+                      jenkinsAuth = auth,
+                      jenkinsLogin = if auth then Just jenkinsLogin else Nothing,
+                      jenkinsApiKey = if auth then Just jenkinsApiKey else Nothing }
+
+readConfig :: InputStream -> IO Config
+readConfig stream = do
+    properties <- loadProperties stream
+    config <- fromProperties properties
+    return config
