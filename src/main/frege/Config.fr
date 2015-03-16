@@ -6,14 +6,20 @@ data Config = Config { jenkinsUrl :: String,
                        jenkinsAuth :: Bool,
                        jenkinsLogin :: Maybe String,
                        jenkinsApiKey :: Maybe String }
+derive Show Config
+
+-- TODO: This definition here is needed because of https://github.com/Frege/frege/issues/129. It may be removed after
+-- the issue have been resolved.
+data Properties' = native java.util.Properties where
+    native load :: MutableIO Properties -> InputStream -> IO () throws IOException
 
 newProperties :: STMutable s Properties
 newProperties = Properties.new ()
 
-loadProperties :: MutableIO InputStream -> IO (MutableIO Properties)
+loadProperties :: InputStream -> IO (MutableIO Properties)
 loadProperties stream = do
     properties <- newProperties
-    properties.load stream
+    Properties'.load properties stream
     return properties
 
 fromProperties :: Mutable s Properties -> ST s Config
@@ -29,7 +35,7 @@ fromProperties properties = do
                       jenkinsLogin = if auth then Just jenkinsLogin else Nothing,
                       jenkinsApiKey = if auth then Just jenkinsApiKey else Nothing }
 
-readConfig :: MutableIO InputStream -> IO Config
+readConfig :: InputStream -> IO Config
 readConfig stream = do
     properties <- loadProperties stream
     config <- fromProperties properties
