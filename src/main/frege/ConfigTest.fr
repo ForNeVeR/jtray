@@ -1,0 +1,5 @@
+module me.fornever.jtray.ConfigTest where
+
+import frege.test.QuickCheck
+
+oneEqualOne = property (1 == 2)
