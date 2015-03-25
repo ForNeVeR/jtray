@@ -8,7 +8,7 @@ Build system uses [Gradle](https://gradle.org/), you need to install that. After
     $ gradle build
 
 ## Configuration
-All configuration data is read from the `./jtra.properties` file. It should be in a [Java Properties file
+All the configuration data read from `./jtray.properties` file. It should be a file in [Java Properties file
 format](http://docs.oracle.com/cd/E23095_01/Platform.93/ATGProgGuide/html/s0204propertiesfileformat01.html). There is an
 example in `jtray.properties.example`.
 
