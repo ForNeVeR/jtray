@@ -1,5 +1,6 @@
 language: java
 jdk: oraclejdk8
+script: gradle run -DmainClass=me.fornever.jtray.TestApplication
 notifications:
   email:
     - friedrich@fornever.me

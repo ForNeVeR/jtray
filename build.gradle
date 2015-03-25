@@ -24,4 +24,4 @@ dependencies {
   compile group: 'com.theoryinpractise.frege', name: 'frege', version: '3.22.367-g2737683'
 }
 
-mainClassName = 'me.fornever.jtray.Application'
+mainClassName = mainClassName = System.getProperty("mainClass") ?: 'me.fornever.jtray.Application'
