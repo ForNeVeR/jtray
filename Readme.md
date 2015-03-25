@@ -15,4 +15,4 @@ example in `jtray.properties.example`.
 ## Testing
 To test the application, run the following command:
 
-    $ gradle exec -PmainClass=me.fornever.jtray.TestApplication
+    $ gradle run -DmainClass=me.fornever.jtray.TestApplication
