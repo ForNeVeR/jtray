@@ -1,6 +1,6 @@
 language: java
 jdk: oraclejdk8
-script: gradle quickCheck
+script: gradle exec -PmainClass=me.fornever.jtray.TestApplication
 notifications:
   email:
     - friedrich@fornever.me

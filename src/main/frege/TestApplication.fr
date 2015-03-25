@@ -1,0 +1,14 @@
+module me.fornever.jtray.TestApplication where
+
+import frege.test.QuickCheck
+import me.fornever.jtray.ConfigTest
+
+checkResult :: Result -> Int
+checkResult Success {} = 0
+checkResult _ = 1
+
+main :: [String] -> IO Int
+main _ = do
+    configProperty <- configTestProperty
+    result <- quickCheckResult configProperty
+    return $ checkResult result

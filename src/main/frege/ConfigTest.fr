@@ -1,5 +1,10 @@
 module me.fornever.jtray.ConfigTest where
 
 import frege.test.QuickCheck
+import me.fornever.jtray.Config (Config, fromProperties, newProperties)
 
-oneEqualOne = property (1 == 2)
+configTestProperty :: IO Property
+configTestProperty = do
+    properties <- newProperties
+    config <- fromProperties properties
+    return $ property $ config == (Config "" false Nothing Nothing)

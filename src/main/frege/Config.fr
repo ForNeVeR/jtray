@@ -6,6 +6,7 @@ data Config = Config { jenkinsUrl :: String,
                        jenkinsAuth :: Bool,
                        jenkinsLogin :: Maybe String,
                        jenkinsApiKey :: Maybe String }
+derive Eq Config
 derive Show Config
 
 -- TODO: This definition here is needed because of https://github.com/Frege/frege/issues/129. It may be removed after

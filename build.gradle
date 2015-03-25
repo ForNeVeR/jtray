@@ -25,3 +25,8 @@ dependencies {
 }
 
 mainClassName = 'me.fornever.jtray.Application'
+
+task execute(type:JavaExec) {
+  main = mainClass
+  classpath = sourceSets.main.runtimeClasspath
+}
